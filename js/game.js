@@ -109,5 +109,3 @@ function paintScore() {
     ctx.fillText("SCORE: " + points, 20, 20);
 
 }
-
-paintScore();
