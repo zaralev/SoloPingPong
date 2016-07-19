@@ -223,6 +223,7 @@ function collides(b, p) {
         } else if (b.y <= p.h && p.y === 0) {
             paddleHit = 1;
             return true;
+            s
         } else {
             return false;
         }
@@ -233,7 +234,9 @@ var collisionSnd = document.getElementById("collide");
 
 function collideAction(b, p) {
     // console.log("sound and then bounce");
-    collisionSnd.play();
+    if (collisionSnd) {
+        collisionSnd.play();
+    }
     // reverse ball y velocity
     ball.vy = -ball.vy;
     // increase the score by 1
@@ -243,9 +246,19 @@ function collideAction(b, p) {
 var flagGameOver = 0;
 // Function to run when the game is over
 function gameOver() {
-  // console.log("Game is over");
-  // Display final score
-  // Display replay button
-  // Stop the animation
-  cancelRequestAnimFrame(init);
+    // console.log("Game is over");
+
+    //Clear the canvas
+    paintCanvas();
+
+    // Display final score
+    ctx.fillStyle = "#fff";
+    ctx.font = "20px Arial, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Game Over - You scored " + points + " points!", W / 2, H / 2);
+
+    // Display replay button
+    // Stop the animation
+    cancelRequestAnimFrame(init);
 }
