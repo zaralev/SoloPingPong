@@ -201,6 +201,7 @@ function check4collision() {
             // Game over
         } else if (ball.y < 0) {
             // Game over
+            gameOver();
         }
         // Ball hits the side of screen
         if (ball.x + ball.r > W) {
@@ -237,4 +238,14 @@ function collideAction(b, p) {
     ball.vy = -ball.vy;
     // increase the score by 1
     points++;
+}
+
+var flagGameOver = 0;
+// Function to run when the game is over
+function gameOver() {
+  // console.log("Game is over");
+  // Display final score
+  // Display replay button
+  // Stop the animation
+  cancelRequestAnimFrame(init);
 }
