@@ -242,7 +242,7 @@ function collides(b, p) {
         } else if (b.y <= p.h && p.y === 0) {
             paddleHit = 1;
             return true;
-            s
+
         } else {
             return false;
         }
@@ -260,6 +260,18 @@ function collideAction(b, p) {
     ball.vy = -ball.vy;
     // increase the score by 1
     points++;
+
+    increaseSpd();
+}
+
+function increaseSpd() {
+    // increase ball speed after ebery 4 points
+    if (points % 4 === 0) {
+        if (Math.abs(ball.vx) < 15 ) { // add an upper limit to the speed of the ball
+            ball.vx += (ball.vx < 0) ? -1 : 1; // if the ball is going left, then increase it going left. otherwise, increase it by one going right
+            ball.vy += (ball.vy < 0) ? -2 : 2; // Up faster by two vs down faster by two
+        }
+    }
 }
 
 var flagGameOver = 0;
