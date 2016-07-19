@@ -231,6 +231,45 @@ function check4collision() {
             ball.x = ball.r;
         }
     }
+    // SPARKLES
+    if (flagCollision) {
+        for (var k = 0; k < particleCount; k++) {
+            particles.push(new createParticles(particlePos.x, particlePos.y, particleDir));
+        }
+    }
+
+    // Emit particles/sparks
+    emitParticles();
+    // reset flagCollision
+    flagCollision = 0;
+}
+
+function createParticles(x, y, d) {
+    this.x = x || 0; // equal to x or 0 if no parameter is passed in
+    this.y = y || 0;
+
+    this.radius = 2;
+    this.vx = -1.5 + Math.random() * 3;
+    this.vy = d * Math.random() * 1.5;
+}
+
+function emitParticles() {
+    for (var j = 0; j < particles.length; j++) {
+        var par = particles[j];
+
+        ctx.beginPath();
+        ctx.fillStyle = "#fff";
+        if (par.radius > 0) {
+            ctx.arc(par.x, par.y, par.radius, 0, Math.PI * 2, false);
+        }
+        ctx.fill();
+
+        par.x += par.vx;
+        par.y += par.vy;
+
+        // Reduce radius of particle so that it dies after a few seconds
+        par.radius = Math.max(par.radius - 0.05, 0.0);
+    }
 }
 
 var paddleHit; // Which paddle was hit 0 = top, 1 = bottom
@@ -258,16 +297,41 @@ function collideAction(b, p) {
     }
     // reverse ball y velocity
     ball.vy = -ball.vy;
-    // increase the score by 1
-    points++;
 
+    if (paddleHit == 0) {
+        // ball hit top paddle
+        ball.y = p.y - p.h; // reset ball so it is at the bottom of the paddle
+        particlePos.y = ball.y + ball.r;
+        particleDir = -1;
+    } else if (paddleHit == 1) {
+        // ball hit bottom paddle
+        ball.y = p.h + ball.r;
+        particlePos.y = ball.y - ball.r;
+        particleDir = 1;
+    }
+    points++; // increase the score by 1
     increaseSpd();
+
+    //SPARKLES
+    particlePos.x = ball.x;
+    flagCollision = 1;
+
+    // add decrease paddle size HERE
 }
+
+// SPARKLES AGAIN
+var flagCollision = 0; // flag var for when ball collides with paddle for particles
+var particles = []; // array for particles
+var particlePos = {}; // Object to contain the position of collision
+var particleDir = 1; // Var to control the direction of sparks
+var particleCount = 20; // number of sparks when the ball hits the paddle
+
+
 
 function increaseSpd() {
     // increase ball speed after ebery 4 points
     if (points % 4 === 0) {
-        if (Math.abs(ball.vx) < 15 ) { // add an upper limit to the speed of the ball
+        if (Math.abs(ball.vx) < 15) { // add an upper limit to the speed of the ball
             ball.vx += (ball.vx < 0) ? -1 : 1; // if the ball is going left, then increase it going left. otherwise, increase it by one going right
             ball.vy += (ball.vy < 0) ? -2 : 2; // Up faster by two vs down faster by two
         }
