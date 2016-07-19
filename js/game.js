@@ -156,6 +156,24 @@ function btnClick(evt) {
             animloop();
         }
     }
+
+    if (flagGameOver) {
+        if (mx >= restartBtn.x && mx <= restartBtn.x + restartBtn.w) {
+            if (my >= restartBtn.y && my <= restartBtn.y + restartBtn.h) {
+                // Reset my game
+                points = 0;
+                ball.x = 20;
+                ball.y = 20;
+                ball.vx = 4;
+                ball.vy = 8;
+
+                flagGameOver = 0;
+                // Start Game animation loop
+                animloop();
+            }
+        }
+    }
+
 }
 
 // Function for running the whole game animation
@@ -199,6 +217,7 @@ function check4collision() {
         // Ball went off the top or bottom of screen
         if (ball.y + ball.r > H) {
             // Game over
+            gameOver();
         } else if (ball.y < 0) {
             // Game over
             gameOver();
@@ -248,17 +267,39 @@ var flagGameOver = 0;
 function gameOver() {
     // console.log("Game is over");
 
-    //Clear the canvas
-    paintCanvas();
-
     // Display final score
     ctx.fillStyle = "#fff";
     ctx.font = "20px Arial, sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText("Game Over - You scored " + points + " points!", W / 2, H / 2);
+    ctx.fillText("Game Over - You scored " + points + " points!", W / 2, H / 2 + 25);
 
-    // Display replay button
     // Stop the animation
     cancelRequestAnimFrame(init);
+
+    // Display replay button
+    restartBtn.draw();
+
+    // Set the game over flag
+    flagGameOver = 1;
+}
+
+var restartBtn = {}; // Restart button object
+restartBtn = {
+    w: 100,
+    h: 50,
+    x: W / 2 - 50,
+    y: H / 2 - 50,
+
+    draw: function() {
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = "2";
+        ctx.strokeRect(this.x, this.y, this.w, this.h);
+
+        ctx.font = "18px Arial, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "#fff";
+        ctx.fillText("RESTART", W / 2, H / 2 - 25);
+    }
 }
